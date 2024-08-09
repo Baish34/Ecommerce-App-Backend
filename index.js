@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const categoryRouter = require("./routes/categories");
 const productRouter = require("./routes/products");
+const wishlistRouter = require("./routes/wishlist");
 
 const corsOptions = {
   origin: "*",
@@ -24,6 +25,7 @@ initializeDatabase();
 // Routes
 app.use("/api/categories", categoryRouter);
 app.use("/api/products", productRouter);
+app.use("/api/wishlist", wishlistRouter);
 
 const PORT = process.env.PORT || 3000;
 
