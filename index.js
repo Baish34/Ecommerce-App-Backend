@@ -4,13 +4,14 @@ const categoryRouter = require("./routes/categories");
 const productRouter = require("./routes/products");
 const wishlistRouter = require("./routes/wishlist");
 const userRouter = require("./routes/user");
+const cartRouter = require("./routes/cart");
 const { initializeDatabase } = require("./db/db.connect");
 
 const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: "*", // Consider setting this to a specific domain in production
+  origin: "*",
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -28,6 +29,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/products", productRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/users", userRouter);
+app.use("/api/cart", cartRouter);
 
 const PORT = process.env.PORT || 3000;
 
