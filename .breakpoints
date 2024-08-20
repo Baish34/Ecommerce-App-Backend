@@ -7,6 +7,14 @@
         "version": 1,
         "index": 177
       }
+    ],
+    "routes/wishlist.js": [
+      {
+        "id": "6c765864-7c34-4927-81a2-24e3e36232ef",
+        "line": 82,
+        "version": 106,
+        "index": 2494
+      }
     ]
   }
 }
