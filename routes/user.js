@@ -2,64 +2,55 @@ const express = require("express");
 const User = require("../models/User");
 const router = express.Router();
 
-// CREATE a new user
-router.post("/", async (req, res) => {
+//to add data for user
+router.post("/users", async (req, res) => {
   try {
-    const { email, password, name, phoneNumber } = req.body;
-    const user = new User({ email, password, name, phoneNumber });
-    await user.save();
-    res.status(201).json(user);
+    const user = new User(req.body);
+    const savedUser = await user.save();
+    res.status(201).json(savedUser);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ error: "Failed to create user", details: error.message });
   }
 });
 
-// READ all users
-router.get("/", async (req, res) => {
+//update user data
+router.put('/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const updates = req.body;
+
   try {
-    const users = await User.find();
-    res.json(users);
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
+    if (updatedUser) {
+      res.status(200).json(updatedUser);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: 'Failed to update user', details: error.message });
   }
 });
 
-// READ a single user by ID
-router.get("/:id", async (req, res) => {
+
+//get user
+router.get("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    const user = await User.findById(userId).populate({path: "cart.items.productId",
+    model:"Product"                                                  }).populate("addresses");  
+
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: "user not found" });
+    }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve user", details: error.message });
   }
 });
 
-// UPDATE a user by ID
-router.put("/:id", async (req, res) => {
-  try {
-    const { email, password, name, phoneNumber } = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { email, password, name, phoneNumber },
-      { new: true },
-    );
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// DELETE a user by ID
-router.delete("/:id", async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ message: "User deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
 module.exports = router;

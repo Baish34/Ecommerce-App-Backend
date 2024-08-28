@@ -5,6 +5,7 @@ const productRouter = require("./routes/products");
 const wishlistRouter = require("./routes/wishlist");
 const userRouter = require("./routes/user");
 const cartRouter = require("./routes/cart");
+const addressRouter = require("./routes/address");
 const { initializeDatabase } = require("./db/db.connect");
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/products", productRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/users", userRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/address", addressRouter);
 
 const PORT = process.env.PORT || 3000;
 

@@ -8,6 +8,14 @@
         "index": 177
       }
     ],
+    "routes/cart.js": [
+      {
+        "id": "44b59aa0-2c06-4d20-b2cf-0a8f54b53328",
+        "line": 4,
+        "version": 66,
+        "index": 109
+      }
+    ],
     "routes/wishlist.js": [
       {
         "id": "6c765864-7c34-4927-81a2-24e3e36232ef",
