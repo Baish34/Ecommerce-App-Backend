@@ -45,3 +45,25 @@ router.get('/users/:userId/addresses', async (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve addresses', details: error.message });
     }
   });
+
+  // Updating an address
+router.put('/addresses/:addressId', async (req, res) => {
+    const { addressId } = req.params;
+    const { addressLine1, addressLine2, city, state, postalCode, country } = req.body;
+  
+    try {
+      const updatedAddress = await Address.findByIdAndUpdate(
+        addressId,
+        { addressLine1, addressLine2, city, state, postalCode, country },
+        { new: true }
+      );
+  
+      if (!updatedAddress) {
+        return res.status(404).json({ error: 'Address not found' });
+      }
+  
+      res.status(200).json(updatedAddress);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update address', details: error.message });
+    }
+  });
