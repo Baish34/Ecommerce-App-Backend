@@ -113,3 +113,46 @@ router.delete("/:userId/cart/items/:productId", async (req, res) => {
       res.status(500).json({ message: "Failed to remove item from cart", details: error.message });
     }
   });
+
+  // DELETE: Clear the cart
+router.delete("/:userId/cart/clear", async (req, res) => {
+    try {
+      const cart = await Cart.findOne({ userId: req.params.userId });
+  
+      if (!cart) {
+        return res.status(404).json({ message: "Cart not found" });
+      }
+  
+      cart.items = [];
+      await cart.save();
+      res.json(cart);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to clear cart", details: error.message });
+    }
+  });
+  
+  // POST: Add a product to the wishlist
+  router.post("/:userId/wishlist/items", async (req, res) => {
+    const { userId } = req.params;
+    const { productId } = req.body;
+  
+    try {
+      let wishlist = await Wishlist.findOne({ userId });
+      if (!wishlist) {
+        wishlist = new Wishlist({ userId, items: [{ productId }] });
+      } else {
+        const existingItem = wishlist.items.find(item => item.productId.toString() === productId);
+        if (!existingItem) {
+          wishlist.items.push({ productId });
+        }
+      }
+  
+      const updatedWishlist = await wishlist.save();
+      res.status(201).json(updatedWishlist);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add item to wishlist", details: error.message });
+    }
+  });
+  
+  module.exports = router;
+  
