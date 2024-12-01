@@ -30,3 +30,18 @@ router.post('/users/:userId/addresses', async (req, res) => {
       res.status(500).json({ error: 'Failed to add address', details: error.message });
     }
   });
+
+  // Get all addresses for a user
+router.get('/users/:userId/addresses', async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      const user = await User.findById(userId).populate('addresses');
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      res.status(200).json(user.addresses);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to retrieve addresses', details: error.message });
+    }
+  });
