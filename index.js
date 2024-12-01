@@ -1,5 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const categoryRouter = require("./routes/categories");
+const productRouter = require("./routes/products");
+const wishlistRouter = require("./routes/wishlist");
+const userRouter = require("./routes/user");
+const cartRouter = require("./routes/cart");
+const addressRouter = require("./routes/address");
 const { initializeDatabase } = require("./db/db.connect");
 
 const app = express();
