@@ -95,3 +95,21 @@ router.post('/carts/:userId/items/:productId/decrease', async (req, res) => {
       res.status(500).json({ error: 'Failed to increase quantity', details: error.message });
     }
   });
+
+  // DELETE: Remove a product from the cart
+router.delete("/:userId/cart/items/:productId", async (req, res) => {
+    const { userId, productId } = req.params;
+  
+    try {
+      const cart = await Cart.findOne({ userId });
+      if (!cart) {
+        return res.status(404).json({ message: "Cart not found" });
+      }
+  
+      cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+      const updatedCart = await cart.save();
+      res.json(updatedCart);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove item from cart", details: error.message });
+    }
+  });
