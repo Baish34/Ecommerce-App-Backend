@@ -22,3 +22,28 @@ router.get("/:userId", async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve cart", details: error.message });
   }
 });
+
+// POST: Add a product to the cart
+router.post("/:userId/cart/items", async (req, res) => {
+    const { userId } = req.params;
+    const { productId, quantity } = req.body;
+  
+    try {
+      let cart = await Cart.findOne({ userId });
+      if (!cart) {
+        cart = new Cart({ userId, items: [{ productId, quantity }] });
+      } else {
+        const existingItem = cart.items.find(item => item.productId.toString() === productId);
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          cart.items.push({ productId, quantity });
+        }
+      }
+  
+      const updatedCart = await cart.save();
+      res.status(201).json(updatedCart);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add item to cart", details: error.message });
+    }
+  });
