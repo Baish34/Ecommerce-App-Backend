@@ -67,3 +67,24 @@ router.put('/addresses/:addressId', async (req, res) => {
       res.status(500).json({ error: 'Failed to update address', details: error.message });
     }
   });
+
+  // Deleting an address
+router.delete('/addresses/:addressId', async (req, res) => {
+    const { addressId } = req.params;
+  
+    try {
+      const deletedAddress = await Address.findByIdAndDelete(addressId);
+      if (!deletedAddress) {
+        return res.status(404).json({ error: 'Address not found' });
+      }
+  
+      // Remove address from user's addresses array
+      await User.findByIdAndUpdate(deletedAddress.userId, { $pull: { addresses: addressId } });
+  
+      res.status(200).json({ message: 'Address deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete address', details: error.message });
+    }
+  });
+  
+  module.exports = router;
