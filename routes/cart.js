@@ -68,3 +68,30 @@ router.post('/carts/:userId/items/:productId/increase', async (req, res) => {
       res.status(500).json({ error: 'Failed to increase quantity', details: error.message });
     }
   });
+
+  // Decrease quantity of a product in the cart
+router.post('/carts/:userId/items/:productId/decrease', async (req, res) => {
+    const { userId, productId } = req.params;
+  
+    try {
+      let cart = await Cart.findOne({ userId });
+      if (!cart) return res.status(404).json({ error: 'Cart not found' });
+  
+      const existingItem = cart.items.find(item => item.productId.toString() === productId);
+      if (existingItem) {
+        if(existingItem.quantity > 1){
+          existingItem.quantity -= 1;
+        }  else {
+          //remove item from the cart
+          cart.items = cart.items.filter(item=> item.productId.toString() !== productId)
+        }
+  
+        const updatedCart = await cart.save();
+        res.status(200).json(updatedCart);
+      } else {
+        res.status(404).json({ error: 'Product not found in cart' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to increase quantity', details: error.message });
+    }
+  });
